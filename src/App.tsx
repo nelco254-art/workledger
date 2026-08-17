@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { ClientDirectory } from './components/ClientDirectory'
-import { TaskBoard } from './components/TaskBoard'
 import { PaymentLedger } from './components/PaymentLedger'
+import { SettingsPanel } from './components/SettingsPanel'
+import { TaskBoard } from './components/TaskBoard'
 import { clients, payments, tasks } from './data'
 import './App.css'
 
@@ -51,6 +52,8 @@ const formatKes = (amount: number) =>
 
 function App() {
   const [activePage, setActivePage] = useState<PageId>('overview')
+  const [compactMode, setCompactMode] = useState(false)
+
   const currentPage = navigation.find((item) => item.id === activePage)!
 
   return (
@@ -59,7 +62,7 @@ function App() {
         Skip to main content
       </a>
 
-      <div className="app-shell">
+      <div className={`app-shell${compactMode ? ' compact' : ''}`}>
         <aside className="sidebar">
           <div className="brand">
             <span className="brand-mark" aria-hidden="true">
@@ -173,18 +176,10 @@ function App() {
             ) : activePage === 'payments' ? (
               <PaymentLedger clients={clients} payments={payments} />
             ) : (
-              <div className="empty-state">
-                <span className="empty-state-mark" aria-hidden="true">
-                  {currentPage.label.slice(0, 2).toUpperCase()}
-                </span>
-
-                <h3>{currentPage.label} are coming next</h3>
-
-                <p>
-                  This section is connected to the navigation and ready for its
-                  first feature.
-                </p>
-              </div>
+              <SettingsPanel
+                compactMode={compactMode}
+                onCompactModeChange={setCompactMode}
+              />
             )}
           </section>
         </main>
