@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ClientDirectory } from './components/ClientDirectory'
 import { clients, payments, tasks } from './data'
 import './App.css'
 
@@ -62,6 +63,7 @@ function App() {
             <span className="brand-mark" aria-hidden="true">
               W
             </span>
+
             <div>
               <strong>WorkLedger</strong>
               <span>Client workspace</span>
@@ -116,60 +118,68 @@ function App() {
             </div>
 
             {activePage === 'overview' ? (
-  <>
-    <div className="summary-grid">
-      <article className="summary-card">
-        <span>Active clients</span>
-        <strong>{activeClientCount}</strong>
-        <small>{clients.length} total client records</small>
-      </article>
+              <>
+                <div className="summary-grid">
+                  <article className="summary-card">
+                    <span>Active clients</span>
+                    <strong>{activeClientCount}</strong>
+                    <small>{clients.length} total client records</small>
+                  </article>
 
-      <article className="summary-card">
-        <span>Open tasks</span>
-        <strong>{openTaskCount}</strong>
-        <small>{inProgressTaskCount} currently in progress</small>
-      </article>
+                  <article className="summary-card">
+                    <span>Open tasks</span>
+                    <strong>{openTaskCount}</strong>
+                    <small>{inProgressTaskCount} currently in progress</small>
+                  </article>
 
-      <article className="summary-card">
-        <span>Outstanding</span>
-        <strong>{formatKes(outstandingAmount)}</strong>
-        <small>
-          {overduePaymentCount} overdue{' '}
-          {overduePaymentCount === 1 ? 'payment' : 'payments'}
-        </small>
-      </article>
-    </div>
+                  <article className="summary-card">
+                    <span>Outstanding</span>
+                    <strong>{formatKes(outstandingAmount)}</strong>
+                    <small>
+                      {overduePaymentCount} overdue{' '}
+                      {overduePaymentCount === 1 ? 'payment' : 'payments'}
+                    </small>
+                  </article>
+                </div>
 
-    <div className="empty-state">
-      <span className="empty-state-mark" aria-hidden="true">
-        OK
-      </span>
-      <h3>Your workload is organized</h3>
-      <p>
-        You have {openTaskCount} open tasks across {activeClientCount}{' '}
-        active clients, with all records ready to review.
-      </p>
-      <button
-        className="primary-button"
-        onClick={() => setActivePage('clients')}
-        type="button"
-      >
-        Review clients
-      </button>
-    </div>
-  </>
-) : (
-  <div className="empty-state">
-    <span className="empty-state-mark" aria-hidden="true">
-      {currentPage.label.slice(0, 2).toUpperCase()}
-    </span>
-    <h3>{currentPage.label} are coming next</h3>
-    <p>
-      This section is connected to the navigation and ready for its
-      first feature.
-    </p>
-  </div>
-)}
+                <div className="empty-state">
+                  <span className="empty-state-mark" aria-hidden="true">
+                    OK
+                  </span>
+
+                  <h3>Your workload is organized</h3>
+
+                  <p>
+                    You have {openTaskCount} open tasks across{' '}
+                    {activeClientCount} active clients, with all records ready
+                    to review.
+                  </p>
+
+                  <button
+                    className="primary-button"
+                    onClick={() => setActivePage('clients')}
+                    type="button"
+                  >
+                    Review clients
+                  </button>
+                </div>
+              </>
+            ) : activePage === 'clients' ? (
+              <ClientDirectory clients={clients} />
+            ) : (
+              <div className="empty-state">
+                <span className="empty-state-mark" aria-hidden="true">
+                  {currentPage.label.slice(0, 2).toUpperCase()}
+                </span>
+
+                <h3>{currentPage.label} are coming next</h3>
+
+                <p>
+                  This section is connected to the navigation and ready for its
+                  first feature.
+                </p>
+              </div>
+            )}
           </section>
         </main>
       </div>
