@@ -1,9 +1,9 @@
-import { useState } from 'react'
 import { ClientDirectory } from './components/ClientDirectory'
 import { PaymentLedger } from './components/PaymentLedger'
 import { SettingsPanel } from './components/SettingsPanel'
 import { TaskBoard } from './components/TaskBoard'
 import { clients, payments, tasks } from './data'
+import { useHashNavigation } from './hooks/useHashNavigation'
 import { usePersistentBoolean } from './hooks/usePersistentBoolean'
 import './App.css'
 
@@ -16,6 +16,8 @@ const navigation: Array<{ id: PageId; label: string }> = [
   { id: 'payments', label: 'Payments' },
   { id: 'settings', label: 'Settings' },
 ]
+
+const pageIds = navigation.map((item) => item.id)
 
 const pageDescriptions: Record<PageId, string> = {
   overview: 'A clear view of your client work and incoming payments.',
@@ -52,7 +54,10 @@ const formatKes = (amount: number) =>
   `KSh ${amount.toLocaleString('en-KE')}`
 
 function App() {
-  const [activePage, setActivePage] = useState<PageId>('overview')
+  const [activePage, setActivePage] = useHashNavigation(
+    pageIds,
+    'overview',
+  )
 
   const [compactMode, setCompactMode] = usePersistentBoolean(
     'workledger:compact-mode',
