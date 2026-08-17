@@ -1227,3 +1227,25 @@
     grid-template-columns: 1fr;
   }
 }
+
+.task-status-button {
+  width: 100%;
+  margin-top: 14px;
+  padding: 8px 10px;
+  border: 1px solid #d5dbe6;
+  border-radius: 8px;
+  color: #4d5a70;
+  background: #f8f9fc;
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.task-status-button:hover {
+  border-color: #9fa9bb;
+  background: #f0f2f7;
+}
+
+.task-status-button:focus-visible {
+  outline: 3px solid #b7aefa;
+  outline-offset: 3px;
+}

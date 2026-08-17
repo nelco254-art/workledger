@@ -1,11 +1,17 @@
+import { useState } from 'react'
 import { ClientDirectory } from './components/ClientDirectory'
 import { OverviewDashboard } from './components/OverviewDashboard'
 import { PaymentLedger } from './components/PaymentLedger'
 import { SettingsPanel } from './components/SettingsPanel'
 import { TaskBoard } from './components/TaskBoard'
-import { clients, payments, tasks } from './data'
+import {
+  clients,
+  payments,
+  tasks as initialTasks,
+} from './data'
 import { useHashNavigation } from './hooks/useHashNavigation'
 import { usePersistentBoolean } from './hooks/usePersistentBoolean'
+import type { TaskStatus } from './types'
 import './App.css'
 
 type PageId = 'overview' | 'clients' | 'tasks' | 'payments' | 'settings'
@@ -39,7 +45,17 @@ function App() {
     false,
   )
 
+  const [taskRecords, setTaskRecords] = useState(initialTasks)
+
   const currentPage = navigation.find((item) => item.id === activePage)!
+
+  const updateTaskStatus = (taskId: string, status: TaskStatus) => {
+    setTaskRecords((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === taskId ? { ...task, status } : task,
+      ),
+    )
+  }
 
   return (
     <>
@@ -111,13 +127,17 @@ function App() {
               <OverviewDashboard
                 clients={clients}
                 payments={payments}
-                tasks={tasks}
+                tasks={taskRecords}
                 onReviewClients={() => setActivePage('clients')}
               />
             ) : activePage === 'clients' ? (
               <ClientDirectory clients={clients} />
             ) : activePage === 'tasks' ? (
-              <TaskBoard clients={clients} tasks={tasks} />
+              <TaskBoard
+                clients={clients}
+                tasks={taskRecords}
+                onStatusChange={updateTaskStatus}
+              />
             ) : activePage === 'payments' ? (
               <PaymentLedger clients={clients} payments={payments} />
             ) : (
