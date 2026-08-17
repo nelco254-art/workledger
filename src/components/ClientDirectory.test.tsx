@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { clients } from '../data'
@@ -33,6 +33,30 @@ describe('ClientDirectory', () => {
     expect(screen.getByText('Brian Mwangi')).toBeInTheDocument()
     expect(screen.queryByText('Amina Wekesa')).not.toBeInTheDocument()
     expect(screen.getByText('Showing 1 of 5 clients')).toBeInTheDocument()
+  })
+
+  it('sorts clients by newest and oldest join date', async () => {
+    const user = userEvent.setup()
+
+    render(<ClientDirectory clients={clients} />)
+
+    const sortField = screen.getByRole('combobox', {
+      name: 'Sort clients',
+    })
+
+    await user.selectOptions(sortField, 'newest')
+
+    let clientRows = screen.getAllByRole('row').slice(1)
+
+    expect(within(clientRows[0]).getByText('Leila Hassan')).toBeInTheDocument()
+    expect(within(clientRows[4]).getByText('Amina Wekesa')).toBeInTheDocument()
+
+    await user.selectOptions(sortField, 'oldest')
+
+    clientRows = screen.getAllByRole('row').slice(1)
+
+    expect(within(clientRows[0]).getByText('Amina Wekesa')).toBeInTheDocument()
+    expect(within(clientRows[4]).getByText('Leila Hassan')).toBeInTheDocument()
   })
 
   it('shows an empty result and clears active filters', async () => {
