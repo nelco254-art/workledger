@@ -1100,3 +1100,19 @@
     grid-template-columns: 1fr;
   }
 }
+
+.directory-controls {
+  grid-template-columns: minmax(240px, 1fr) 170px 190px auto;
+}
+
+@media (max-width: 1000px) {
+  .directory-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .directory-controls {
+    grid-template-columns: 1fr;
+  }
+}

@@ -6,6 +6,7 @@ interface ClientDirectoryProps {
 }
 
 type StatusFilter = ClientStatus | 'all'
+type ClientSort = 'name' | 'newest' | 'oldest'
 
 const dateFormatter = new Intl.DateTimeFormat('en-KE', {
   day: 'numeric',
@@ -25,24 +26,43 @@ const getInitials = (name: string) =>
     .slice(0, 2)
     .toUpperCase()
 
+const compareClients = (
+  left: Client,
+  right: Client,
+  sortOrder: ClientSort,
+) => {
+  if (sortOrder === 'newest') {
+    return right.joinedOn.localeCompare(left.joinedOn)
+  }
+
+  if (sortOrder === 'oldest') {
+    return left.joinedOn.localeCompare(right.joinedOn)
+  }
+
+  return left.name.localeCompare(right.name)
+}
+
 export function ClientDirectory({ clients }: ClientDirectoryProps) {
   const [query, setQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [sortOrder, setSortOrder] = useState<ClientSort>('name')
 
   const normalizedQuery = query.trim().toLowerCase()
 
-  const filteredClients = clients.filter((client) => {
-    const matchesQuery =
-      normalizedQuery.length === 0 ||
-      client.name.toLowerCase().includes(normalizedQuery) ||
-      client.company.toLowerCase().includes(normalizedQuery) ||
-      client.email.toLowerCase().includes(normalizedQuery)
+  const visibleClients = clients
+    .filter((client) => {
+      const matchesQuery =
+        normalizedQuery.length === 0 ||
+        client.name.toLowerCase().includes(normalizedQuery) ||
+        client.company.toLowerCase().includes(normalizedQuery) ||
+        client.email.toLowerCase().includes(normalizedQuery)
 
-    const matchesStatus =
-      statusFilter === 'all' || client.status === statusFilter
+      const matchesStatus =
+        statusFilter === 'all' || client.status === statusFilter
 
-    return matchesQuery && matchesStatus
-  })
+      return matchesQuery && matchesStatus
+    })
+    .sort((left, right) => compareClients(left, right, sortOrder))
 
   const hasActiveFilters =
     normalizedQuery.length > 0 || statusFilter !== 'all'
@@ -57,9 +77,7 @@ export function ClientDirectory({ clients }: ClientDirectoryProps) {
       <div className="directory-header">
         <div>
           <h3>Client directory</h3>
-          <p>
-            Search client records or narrow the directory by account status.
-          </p>
+          <p>Search, filter, and sort client records.</p>
         </div>
       </div>
 
@@ -90,6 +108,20 @@ export function ClientDirectory({ clients }: ClientDirectoryProps) {
           </select>
         </label>
 
+        <label className="filter-field">
+          <span>Sort clients</span>
+          <select
+            onChange={(event) =>
+              setSortOrder(event.target.value as ClientSort)
+            }
+            value={sortOrder}
+          >
+            <option value="name">Name A–Z</option>
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+          </select>
+        </label>
+
         {hasActiveFilters && (
           <button
             className="secondary-button"
@@ -102,7 +134,7 @@ export function ClientDirectory({ clients }: ClientDirectoryProps) {
       </div>
 
       <p className="result-count" id="client-results" aria-live="polite">
-        Showing {filteredClients.length} of {clients.length}{' '}
+        Showing {visibleClients.length} of {clients.length}{' '}
         {clients.length === 1 ? 'client' : 'clients'}
       </p>
 
@@ -115,6 +147,7 @@ export function ClientDirectory({ clients }: ClientDirectoryProps) {
           <caption className="sr-only">
             WorkLedger client directory
           </caption>
+
           <thead>
             <tr>
               <th scope="col">Client</th>
@@ -126,8 +159,8 @@ export function ClientDirectory({ clients }: ClientDirectoryProps) {
           </thead>
 
           <tbody>
-            {filteredClients.length > 0 ? (
-              filteredClients.map((client) => (
+            {visibleClients.length > 0 ? (
+              visibleClients.map((client) => (
                 <tr key={client.id}>
                   <td>
                     <div className="client-identity">
@@ -137,12 +170,15 @@ export function ClientDirectory({ clients }: ClientDirectoryProps) {
                       <strong>{client.name}</strong>
                     </div>
                   </td>
+
                   <td>{client.company}</td>
+
                   <td>
                     <a className="email-link" href={`mailto:${client.email}`}>
                       {client.email}
                     </a>
                   </td>
+
                   <td>
                     <span
                       className={`status-badge status-${client.status}`}
@@ -150,6 +186,7 @@ export function ClientDirectory({ clients }: ClientDirectoryProps) {
                       {client.status}
                     </span>
                   </td>
+
                   <td>{formatDate(client.joinedOn)}</td>
                 </tr>
               ))
