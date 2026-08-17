@@ -1062,3 +1062,41 @@
     grid-template-columns: 1fr;
   }
 }
+
+.task-board-layout {
+  display: grid;
+  gap: 14px;
+}
+
+.task-toolbar {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) 190px auto;
+  gap: 14px;
+  align-items: end;
+  padding: 18px;
+  border: 1px solid #e2e6ee;
+  border-radius: 13px;
+  background: #ffffff;
+}
+
+.task-result-count {
+  margin: 0;
+  color: #7b879d;
+  font-size: 0.78rem;
+}
+
+.task-column-empty {
+  padding: 30px 12px;
+  border: 1px dashed #d6dce6;
+  border-radius: 10px;
+  color: #8791a5;
+  background: rgb(255 255 255 / 55%);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .task-toolbar {
+    grid-template-columns: 1fr;
+  }
+}
