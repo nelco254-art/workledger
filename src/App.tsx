@@ -1,120 +1,147 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 
+type PageId = 'overview' | 'clients' | 'tasks' | 'payments' | 'settings'
+
+const navigation: Array<{ id: PageId; label: string }> = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'clients', label: 'Clients' },
+  { id: 'tasks', label: 'Tasks' },
+  { id: 'payments', label: 'Payments' },
+  { id: 'settings', label: 'Settings' },
+]
+
+const pageDescriptions: Record<PageId, string> = {
+  overview: 'A clear view of your client work and incoming payments.',
+  clients: 'Keep client details and active relationships organized.',
+  tasks: 'Plan deliverables and track work through completion.',
+  payments: 'Monitor expected, received, and overdue payments.',
+  settings: 'Manage your workspace preferences.',
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [activePage, setActivePage] = useState<PageId>('overview')
+  const currentPage = navigation.find((item) => item.id === activePage)!
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
 
-      <div className="ticks"></div>
+      <div className="app-shell">
+        <aside className="sidebar">
+          <div className="brand">
+            <span className="brand-mark" aria-hidden="true">
+              W
+            </span>
+            <div>
+              <strong>WorkLedger</strong>
+              <span>Client workspace</span>
+            </div>
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <nav aria-label="Primary navigation">
+            <ul className="nav-list">
+              {navigation.map((item) => (
+                <li key={item.id}>
+                  <button
+                    className="nav-button"
+                    aria-current={item.id === activePage ? 'page' : undefined}
+                    onClick={() => setActivePage(item.id)}
+                    type="button"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+          <div className="sidebar-status">
+            <span className="status-dot" aria-hidden="true" />
+            <span>Local workspace</span>
+          </div>
+        </aside>
+
+        <main className="main-content" id="main-content">
+          <header className="topbar">
+            <div>
+              <p className="eyebrow">Workspace</p>
+              <h1>{currentPage.label}</h1>
+            </div>
+
+            <div className="profile" aria-label="Current user">
+              <span className="profile-avatar" aria-hidden="true">
+                N
+              </span>
+              <span>Nelco</span>
+            </div>
+          </header>
+
+          <section className="page-content" aria-labelledby="page-heading">
+            <div className="page-introduction">
+              <div>
+                <p className="eyebrow">WorkLedger</p>
+                <h2 id="page-heading">{currentPage.label}</h2>
+                <p>{pageDescriptions[activePage]}</p>
+              </div>
+            </div>
+
+            {activePage === 'overview' ? (
+              <>
+                <div className="summary-grid">
+                  <article className="summary-card">
+                    <span>Active clients</span>
+                    <strong>0</strong>
+                    <small>Ready for your first client</small>
+                  </article>
+
+                  <article className="summary-card">
+                    <span>Open tasks</span>
+                    <strong>0</strong>
+                    <small>Nothing awaiting action</small>
+                  </article>
+
+                  <article className="summary-card">
+                    <span>Outstanding</span>
+                    <strong>KSh 0</strong>
+                    <small>No unpaid balances</small>
+                  </article>
+                </div>
+
+                <div className="empty-state">
+                  <span className="empty-state-mark" aria-hidden="true">
+                    WL
+                  </span>
+                  <h3>Your workspace is ready</h3>
+                  <p>
+                    Add a client to begin organizing tasks and tracking payments.
+                  </p>
+                  <button
+                    className="primary-button"
+                    onClick={() => setActivePage('clients')}
+                    type="button"
+                  >
+                    Go to clients
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="empty-state">
+                <span className="empty-state-mark" aria-hidden="true">
+                  {currentPage.label.slice(0, 2).toUpperCase()}
+                </span>
+                <h3>{currentPage.label} are coming next</h3>
+                <p>
+                  This section is connected to the navigation and ready for its
+                  first feature.
+                </p>
+              </div>
+            )}
+          </section>
+        </main>
+      </div>
     </>
   )
 }
