@@ -703,3 +703,110 @@
     grid-template-columns: 1fr;
   }
 }
+
+.payment-status-overdue {
+  color: #b42318;
+  background: #feeceb;
+}
+
+.payment-paid-date {
+  display: block;
+  margin-top: 5px;
+  color: #8791a5;
+  white-space: nowrap;
+}
+
+.payment-panel {
+  overflow: hidden;
+  border: 1px solid #e2e6ee;
+  border-radius: 15px;
+  background: #ffffff;
+  box-shadow: 0 8px 28px rgb(29 41 57 / 5%);
+}
+
+.payment-header {
+  padding: 22px 24px;
+  border-bottom: 1px solid #e7eaf0;
+}
+
+.payment-header h3 {
+  margin: 0;
+  color: #25314a;
+  font-size: 1.05rem;
+}
+
+.payment-header p {
+  margin: 5px 0 0;
+  color: #7b879d;
+  font-size: 0.82rem;
+}
+
+.payment-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.payment-table th,
+.payment-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.payment-table th {
+  color: #69758c;
+  background: #fafbfc;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.payment-table td {
+  color: #596579;
+  font-size: 0.82rem;
+}
+
+.payment-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.payment-table tbody tr:hover {
+  background: #fafbff;
+}
+
+.payment-reference {
+  color: #69758c;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+}
+
+.payment-client,
+.payment-amount {
+  color: #25314a;
+  white-space: nowrap;
+}
+
+.payment-status {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.payment-status-paid {
+  color: #067647;
+  background: #ecfdf3;
+}
+
+.payment-status-pending {
+  color: #875400;
+  background: #fff4d6;
+}
+
+.payment-status-overdue {
+  color: #b42318;
+  background: #feeceb;
+}

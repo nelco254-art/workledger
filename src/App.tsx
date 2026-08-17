@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ClientDirectory } from './components/ClientDirectory'
 import { TaskBoard } from './components/TaskBoard'
+import { PaymentLedger } from './components/PaymentLedger'
 import { clients, payments, tasks } from './data'
 import './App.css'
 
@@ -169,6 +170,8 @@ function App() {
               <ClientDirectory clients={clients} />
             ) : activePage === 'tasks' ? (
               <TaskBoard clients={clients} tasks={tasks} />
+            ) : activePage === 'payments' ? (
+              <PaymentLedger clients={clients} payments={payments} />
             ) : (
               <div className="empty-state">
                 <span className="empty-state-mark" aria-hidden="true">
