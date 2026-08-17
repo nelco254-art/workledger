@@ -4,6 +4,7 @@ import { PaymentLedger } from './components/PaymentLedger'
 import { SettingsPanel } from './components/SettingsPanel'
 import { TaskBoard } from './components/TaskBoard'
 import { clients, payments, tasks } from './data'
+import { usePersistentBoolean } from './hooks/usePersistentBoolean'
 import './App.css'
 
 type PageId = 'overview' | 'clients' | 'tasks' | 'payments' | 'settings'
@@ -52,7 +53,11 @@ const formatKes = (amount: number) =>
 
 function App() {
   const [activePage, setActivePage] = useState<PageId>('overview')
-  const [compactMode, setCompactMode] = useState(false)
+
+  const [compactMode, setCompactMode] = usePersistentBoolean(
+    'workledger:compact-mode',
+    false,
+  )
 
   const currentPage = navigation.find((item) => item.id === activePage)!
 
