@@ -51,6 +51,7 @@ Start the application with `npm run dev`, then open the local URL shown by Vite,
 - `npm run lint` checks the source with Oxlint.
 - `npm test` runs the complete test suite once.
 - `npm run test:watch` runs Vitest in watch mode.
+- `npm run check` runs lint, the production build, and the complete test suite.
 
 ## Data and persistence
 
