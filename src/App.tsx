@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { ClientDirectory } from './components/ClientDirectory'
 import { OverviewDashboard } from './components/OverviewDashboard'
 import { PaymentLedger } from './components/PaymentLedger'
@@ -11,6 +10,7 @@ import {
 } from './data'
 import { useHashNavigation } from './hooks/useHashNavigation'
 import { usePersistentBoolean } from './hooks/usePersistentBoolean'
+import { usePersistentState } from './hooks/usePersistentState'
 import type { TaskStatus } from './types'
 import './App.css'
 
@@ -45,7 +45,10 @@ function App() {
     false,
   )
 
-  const [taskRecords, setTaskRecords] = useState(initialTasks)
+  const [taskRecords, setTaskRecords] = usePersistentState(
+    'workledger:tasks',
+    initialTasks,
+  )
 
   const currentPage = navigation.find((item) => item.id === activePage)!
 
