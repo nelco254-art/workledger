@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { clients, payments, tasks } from './data'
 import './App.css'
 
 type PageId = 'overview' | 'clients' | 'tasks' | 'payments' | 'settings'
@@ -18,6 +19,32 @@ const pageDescriptions: Record<PageId, string> = {
   payments: 'Monitor expected, received, and overdue payments.',
   settings: 'Manage your workspace preferences.',
 }
+
+const activeClientCount = clients.filter(
+  (client) => client.status === 'active',
+).length
+
+const openTaskCount = tasks.filter((task) => task.status !== 'done').length
+
+const inProgressTaskCount = tasks.filter(
+  (task) => task.status === 'in-progress',
+).length
+
+const unpaidPayments = payments.filter(
+  (payment) => payment.status !== 'paid',
+)
+
+const outstandingAmount = unpaidPayments.reduce(
+  (total, payment) => total + payment.amount,
+  0,
+)
+
+const overduePaymentCount = payments.filter(
+  (payment) => payment.status === 'overdue',
+).length
+
+const formatKes = (amount: number) =>
+  `KSh ${amount.toLocaleString('en-KE')}`
 
 function App() {
   const [activePage, setActivePage] = useState<PageId>('overview')
@@ -89,56 +116,60 @@ function App() {
             </div>
 
             {activePage === 'overview' ? (
-              <>
-                <div className="summary-grid">
-                  <article className="summary-card">
-                    <span>Active clients</span>
-                    <strong>0</strong>
-                    <small>Ready for your first client</small>
-                  </article>
+  <>
+    <div className="summary-grid">
+      <article className="summary-card">
+        <span>Active clients</span>
+        <strong>{activeClientCount}</strong>
+        <small>{clients.length} total client records</small>
+      </article>
 
-                  <article className="summary-card">
-                    <span>Open tasks</span>
-                    <strong>0</strong>
-                    <small>Nothing awaiting action</small>
-                  </article>
+      <article className="summary-card">
+        <span>Open tasks</span>
+        <strong>{openTaskCount}</strong>
+        <small>{inProgressTaskCount} currently in progress</small>
+      </article>
 
-                  <article className="summary-card">
-                    <span>Outstanding</span>
-                    <strong>KSh 0</strong>
-                    <small>No unpaid balances</small>
-                  </article>
-                </div>
+      <article className="summary-card">
+        <span>Outstanding</span>
+        <strong>{formatKes(outstandingAmount)}</strong>
+        <small>
+          {overduePaymentCount} overdue{' '}
+          {overduePaymentCount === 1 ? 'payment' : 'payments'}
+        </small>
+      </article>
+    </div>
 
-                <div className="empty-state">
-                  <span className="empty-state-mark" aria-hidden="true">
-                    WL
-                  </span>
-                  <h3>Your workspace is ready</h3>
-                  <p>
-                    Add a client to begin organizing tasks and tracking payments.
-                  </p>
-                  <button
-                    className="primary-button"
-                    onClick={() => setActivePage('clients')}
-                    type="button"
-                  >
-                    Go to clients
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div className="empty-state">
-                <span className="empty-state-mark" aria-hidden="true">
-                  {currentPage.label.slice(0, 2).toUpperCase()}
-                </span>
-                <h3>{currentPage.label} are coming next</h3>
-                <p>
-                  This section is connected to the navigation and ready for its
-                  first feature.
-                </p>
-              </div>
-            )}
+    <div className="empty-state">
+      <span className="empty-state-mark" aria-hidden="true">
+        OK
+      </span>
+      <h3>Your workload is organized</h3>
+      <p>
+        You have {openTaskCount} open tasks across {activeClientCount}{' '}
+        active clients, with all records ready to review.
+      </p>
+      <button
+        className="primary-button"
+        onClick={() => setActivePage('clients')}
+        type="button"
+      >
+        Review clients
+      </button>
+    </div>
+  </>
+) : (
+  <div className="empty-state">
+    <span className="empty-state-mark" aria-hidden="true">
+      {currentPage.label.slice(0, 2).toUpperCase()}
+    </span>
+    <h3>{currentPage.label} are coming next</h3>
+    <p>
+      This section is connected to the navigation and ready for its
+      first feature.
+    </p>
+  </div>
+)}
           </section>
         </main>
       </div>
