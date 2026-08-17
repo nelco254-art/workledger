@@ -1,4 +1,5 @@
 import { ClientDirectory } from './components/ClientDirectory'
+import { OverviewDashboard } from './components/OverviewDashboard'
 import { PaymentLedger } from './components/PaymentLedger'
 import { SettingsPanel } from './components/SettingsPanel'
 import { TaskBoard } from './components/TaskBoard'
@@ -26,32 +27,6 @@ const pageDescriptions: Record<PageId, string> = {
   payments: 'Monitor expected, received, and overdue payments.',
   settings: 'Manage your workspace preferences.',
 }
-
-const activeClientCount = clients.filter(
-  (client) => client.status === 'active',
-).length
-
-const openTaskCount = tasks.filter((task) => task.status !== 'done').length
-
-const inProgressTaskCount = tasks.filter(
-  (task) => task.status === 'in-progress',
-).length
-
-const unpaidPayments = payments.filter(
-  (payment) => payment.status !== 'paid',
-)
-
-const outstandingAmount = unpaidPayments.reduce(
-  (total, payment) => total + payment.amount,
-  0,
-)
-
-const overduePaymentCount = payments.filter(
-  (payment) => payment.status === 'overdue',
-).length
-
-const formatKes = (amount: number) =>
-  `KSh ${amount.toLocaleString('en-KE')}`
 
 function App() {
   const [activePage, setActivePage] = useHashNavigation(
@@ -133,52 +108,12 @@ function App() {
             </div>
 
             {activePage === 'overview' ? (
-              <>
-                <div className="summary-grid">
-                  <article className="summary-card">
-                    <span>Active clients</span>
-                    <strong>{activeClientCount}</strong>
-                    <small>{clients.length} total client records</small>
-                  </article>
-
-                  <article className="summary-card">
-                    <span>Open tasks</span>
-                    <strong>{openTaskCount}</strong>
-                    <small>{inProgressTaskCount} currently in progress</small>
-                  </article>
-
-                  <article className="summary-card">
-                    <span>Outstanding</span>
-                    <strong>{formatKes(outstandingAmount)}</strong>
-                    <small>
-                      {overduePaymentCount} overdue{' '}
-                      {overduePaymentCount === 1 ? 'payment' : 'payments'}
-                    </small>
-                  </article>
-                </div>
-
-                <div className="empty-state">
-                  <span className="empty-state-mark" aria-hidden="true">
-                    OK
-                  </span>
-
-                  <h3>Your workload is organized</h3>
-
-                  <p>
-                    You have {openTaskCount} open tasks across{' '}
-                    {activeClientCount} active clients, with all records ready
-                    to review.
-                  </p>
-
-                  <button
-                    className="primary-button"
-                    onClick={() => setActivePage('clients')}
-                    type="button"
-                  >
-                    Review clients
-                  </button>
-                </div>
-              </>
+              <OverviewDashboard
+                clients={clients}
+                payments={payments}
+                tasks={tasks}
+                onReviewClients={() => setActivePage('clients')}
+              />
             ) : activePage === 'clients' ? (
               <ClientDirectory clients={clients} />
             ) : activePage === 'tasks' ? (
