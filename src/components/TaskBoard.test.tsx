@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { clients, tasks } from '../data'
 import { TaskBoard } from './TaskBoard'
 
@@ -51,5 +51,59 @@ describe('TaskBoard', () => {
     expect(screen.getByText('Showing 7 of 7 tasks')).toBeInTheDocument()
     expect(screen.getByText('Prepare brand asset package')).toBeInTheDocument()
     expect(screen.getByText('Deliver performance report')).toBeInTheDocument()
+  })
+
+  it('requests completion and announces the task move', async () => {
+    const user = userEvent.setup()
+    const onStatusChange = vi.fn()
+
+    render(
+      <TaskBoard
+        clients={clients}
+        tasks={tasks}
+        onStatusChange={onStatusChange}
+      />,
+    )
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Mark complete: Review logistics dashboard',
+      }),
+    )
+
+    expect(onStatusChange).toHaveBeenCalledWith('task-002', 'done')
+
+    expect(
+      screen.getByText(
+        'Review logistics dashboard moved to Done.',
+      ),
+    ).toBeInTheDocument()
+  })
+
+  it('requests reopening for a completed task', async () => {
+    const user = userEvent.setup()
+    const onStatusChange = vi.fn()
+
+    render(
+      <TaskBoard
+        clients={clients}
+        tasks={tasks}
+        onStatusChange={onStatusChange}
+      />,
+    )
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Reopen: Deliver performance report',
+      }),
+    )
+
+    expect(onStatusChange).toHaveBeenCalledWith('task-003', 'todo')
+
+    expect(
+      screen.getByText(
+        'Deliver performance report moved to To do.',
+      ),
+    ).toBeInTheDocument()
   })
 })
